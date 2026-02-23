@@ -24,13 +24,14 @@ jobs:
       matrix:
         php: [8.5, 8.4]
         laravel: ['13.*', '12.*']
+        dependency-version: [prefer-stable]
         include:
           - laravel: 12.*
             testbench: 10.*
           - laravel: 13.*
             testbench: 11.*
 
-    name: PHP ${{ matrix.php }} LARAVEL ${{ matrix.laravel }}
+    name: PHP ${{ matrix.php }} - LARAVEL ${{ matrix.laravel }}
 
     steps:
       - name: Checkout code
