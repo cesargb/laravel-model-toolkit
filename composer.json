@@ -32,7 +32,8 @@
         }
     },
     "scripts": {
-        "test": "vendor/bin/phpunit"
+        "test": "vendor/bin/phpunit",
+        "analyse": "vendor/bin/phpstan analyse --level=max src tests"
     },
     "minimum-stability": "dev",
     "prefer-stable": true
