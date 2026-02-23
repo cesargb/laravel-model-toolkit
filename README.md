@@ -1,5 +1,5 @@
 <div align="center">
-    <img alt="Logo for Laravel Model Toolkit" src="art/laravel-model-toolkit.webp" style="max-height: 300px; width: 100%; max-width: 900px; margin-bottom: 20px; object-fit: cover;">
+    <img alt="Logo for Laravel Model Toolkit" src="art/banner-laravel-model-toolkit.webp" style="max-height: 300px; width: 100%; max-width: 900px; margin-bottom: 20px; object-fit: cover;">
 </div>
 <div align="left">
 <h1>Laravel Model Toolkit</h1>
