@@ -11,7 +11,7 @@ It also discovers models that use Laravel's `Prunable` or `MassPrunable` traits 
 ## Requirements
 
 - PHP 8.4+
-- Laravel 11+
+- Laravel 12+
 
 ## Installation
 
