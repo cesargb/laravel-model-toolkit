@@ -43,16 +43,15 @@ class ClassMap
                 default => TypeDeclaration::UNKNOWN,
             };
 
+            $extendedOf = $this->extendedOf($fileContent);
+
             return [
                 'filename' => $filename,
                 'fqcn' => $fqcn,
                 'namespace' => str_replace('\\'.$name, '', $fqcn),
                 'name' => $name,
                 'type' => $type,
-                'extend' => match (true) {
-                    preg_match('/\bextends\s+([\\\\\w]+)\b/', $fileContent, $matches) === 1 => $matches[1],
-                    default => null,
-                },
+                'extend' => $extendedOf,
             ];
         }, $maps, array_keys($maps));
 
@@ -71,7 +70,7 @@ class ClassMap
             function ($item) use ($abstractsExtendModel) {
                 $extendModel = $item['extend'] ?? null;
 
-                if ($extendModel === 'Model' || in_array($extendModel, array_column($abstractsExtendModel, 'name'))) {
+                if ($extendModel === Model::class || in_array($extendModel, array_column($abstractsExtendModel, 'name'))) {
                     $reflection = new \ReflectionClass($item['fqcn']);
 
                     return $reflection->isSubclassOf(Model::class);
@@ -129,5 +128,23 @@ class ClassMap
     private function inVendor(): array
     {
         return (new ClassMapInVendor($this->appPath))->get();
+    }
+
+    private function extendedOf(string $fileContent): string
+    {
+        $extendedOf = match (true) {
+            preg_match('/\bextends\s+([\\\\\w]+)\b/', $fileContent, $matches) === 1 => $matches[1],
+            default => null,
+        };
+
+        if (! str_contains($extendedOf ?? '\\', '\\')) {
+            $extendedOf = match (true) {
+                preg_match('/\buse\s+([\\\\\w]+)\s+as\s+'.$extendedOf.'\b/', $fileContent, $matches) === 1 => $matches[1],
+                preg_match('/\buse\s+([\\\\\w]+)'.$extendedOf.'\b/', $fileContent, $matches) === 1 => $matches[1].$extendedOf,
+                default => $extendedOf,
+            };
+        }
+
+        return $extendedOf;
     }
 }

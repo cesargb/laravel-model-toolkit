@@ -16,7 +16,7 @@ class LaravelFilter implements Filterable
             return $classes;
         }
 
-        $namespaces = array_merge($laravelNamespaces, $this->namespacesOfRoot($classes), ['Illuminate\\']);
+        $namespaces = array_merge($laravelNamespaces, $this->namespacesOfRoot($classes));
 
         return array_filter($classes, function ($filename, $className) use ($namespaces) {
             foreach ($namespaces as $namespaceProvider) {

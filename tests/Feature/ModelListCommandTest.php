@@ -3,6 +3,7 @@
 namespace Cesargb\MorphCleaner\Tests\Feature;
 
 use Cesargb\MorphCleaner\Tests\TestCase;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Artisan;
 
 class ModelListCommandTest extends TestCase
@@ -105,7 +106,7 @@ class ModelListCommandTest extends TestCase
         $this->assertSame('Post', $post['name']);
         $this->assertSame('Cesargb\MorphCleaner\Tests\Fixtures\Models', $post['namespace']);
         $this->assertSame('class', $post['type']);
-        $this->assertSame('Model', $post['extend']);
+        $this->assertSame(Model::class, $post['extend']);
     }
 
     public function test_json_filename_points_to_existing_php_file(): void
