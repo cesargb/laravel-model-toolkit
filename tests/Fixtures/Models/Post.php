@@ -1,8 +1,8 @@
 <?php
 
-namespace Cesargb\MorphCleaner\Tests\Fixtures\Models;
+namespace Cesargb\ModelToolkit\Tests\Fixtures\Models;
 
-use Cesargb\MorphCleaner\Tests\Fixtures\Factories\PostFactory;
+use Cesargb\ModelToolkit\Tests\Fixtures\Factories\PostFactory;
 use Illuminate\Database\Eloquent\Attributes\UseFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;

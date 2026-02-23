@@ -1,7 +1,7 @@
 {
     "autoload": {
         "psr-4": {
-            "Cesargb\\MorphCleaner\\Tests\\Fixtures\\Models\\": "../Models/"
+            "Cesargb\\ModelToolkit\\Tests\\Fixtures\\Models\\": "../Models/"
         }
     }
 }

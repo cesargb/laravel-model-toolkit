@@ -1,12 +1,12 @@
 <?php
 
-namespace Cesargb\MorphCleaner;
+namespace Cesargb\ModelToolkit;
 
-use Cesargb\MorphCleaner\Console\Commands\ModelCleanCommand;
-use Cesargb\MorphCleaner\Console\Commands\ModelListCommand;
+use Cesargb\ModelToolkit\Console\Commands\ModelCleanCommand;
+use Cesargb\ModelToolkit\Console\Commands\ModelListCommand;
 use Illuminate\Support\ServiceProvider;
 
-class MorphCleanerServiceProvider extends ServiceProvider
+class ModelToolkitServiceProvider extends ServiceProvider
 {
     public function boot()
     {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Cesargb\MorphCleaner\ClassMap;
+namespace Cesargb\ModelToolkit\ClassMap;
 
 enum TypeDeclaration: string
 {

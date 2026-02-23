@@ -1,8 +1,8 @@
 <?php
 
-namespace Cesargb\MorphCleaner\Console\Commands;
+namespace Cesargb\ModelToolkit\Console\Commands;
 
-use Cesargb\MorphCleaner\ClassMap\ClassMap;
+use Cesargb\ModelToolkit\ClassMap\ClassMap;
 use Illuminate\Console\Command;
 
 class ModelListCommand extends Command

@@ -1,8 +1,8 @@
 <?php
 
-namespace Cesargb\MorphCleaner;
+namespace Cesargb\ModelToolkit;
 
-use Cesargb\MorphCleaner\ClassMap\ClassMap;
+use Cesargb\ModelToolkit\ClassMap\ClassMap;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphOneOrMany;

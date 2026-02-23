@@ -1,8 +1,8 @@
 <?php
 
-namespace Cesargb\MorphCleaner\ClassMap;
+namespace Cesargb\ModelToolkit\ClassMap;
 
-use Cesargb\MorphCleaner\Filters\LaravelFilter;
+use Cesargb\ModelToolkit\Filters\LaravelFilter;
 
 final class ClassMapInVendor
 {

@@ -1,8 +1,8 @@
 <?php
 
-namespace Cesargb\MorphCleaner\Filters;
+namespace Cesargb\ModelToolkit\Filters;
 
-use Cesargb\MorphCleaner\Filters\Contracts\Filterable;
+use Cesargb\ModelToolkit\Filters\Contracts\Filterable;
 
 class LaravelFilter implements Filterable
 {

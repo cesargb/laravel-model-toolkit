@@ -1,8 +1,8 @@
 <?php
 
-namespace Cesargb\MorphCleaner\Tests\Fixtures\Factories;
+namespace Cesargb\ModelToolkit\Tests\Fixtures\Factories;
 
-use Cesargb\MorphCleaner\Tests\Fixtures\Models\Comment;
+use Cesargb\ModelToolkit\Tests\Fixtures\Models\Comment;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class CommentFactory extends Factory

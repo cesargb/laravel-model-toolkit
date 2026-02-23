@@ -1,6 +1,6 @@
 <?php
 
-namespace Cesargb\MorphCleaner\Filters\Contracts;
+namespace Cesargb\ModelToolkit\Filters\Contracts;
 
 interface Filterable
 {

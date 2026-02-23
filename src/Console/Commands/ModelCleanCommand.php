@@ -1,9 +1,9 @@
 <?php
 
-namespace Cesargb\MorphCleaner\Console\Commands;
+namespace Cesargb\ModelToolkit\Console\Commands;
 
-use Cesargb\MorphCleaner\Morph;
-use Cesargb\MorphCleaner\Prunable;
+use Cesargb\ModelToolkit\Morph;
+use Cesargb\ModelToolkit\Prunable;
 use Illuminate\Console\Command;
 
 class ModelCleanCommand extends Command

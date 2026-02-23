@@ -1,8 +1,8 @@
 <?php
 
-namespace Cesargb\MorphCleaner\Tests\Fixtures\Factories;
+namespace Cesargb\ModelToolkit\Tests\Fixtures\Factories;
 
-use Cesargb\MorphCleaner\Tests\Fixtures\Models\Tag;
+use Cesargb\ModelToolkit\Tests\Fixtures\Models\Tag;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class TagFactory extends Factory

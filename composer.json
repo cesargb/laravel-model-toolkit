@@ -6,12 +6,12 @@
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "Cesargb\\MorphCleaner\\": "src/"
+            "Cesargb\\ModelToolkit\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Cesargb\\MorphCleaner\\Tests\\": "tests/"
+            "Cesargb\\ModelToolkit\\Tests\\": "tests/"
         }
     },
     "require": {
@@ -29,7 +29,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Cesargb\\MorphCleaner\\MorphCleanerServiceProvider"
+                "Cesargb\\ModelToolkit\\ModelToolkitServiceProvider"
             ]
         }
     },

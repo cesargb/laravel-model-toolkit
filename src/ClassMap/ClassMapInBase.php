@@ -1,6 +1,6 @@
 <?php
 
-namespace Cesargb\MorphCleaner\ClassMap;
+namespace Cesargb\ModelToolkit\ClassMap;
 
 use Symfony\Component\Finder\Finder;
 

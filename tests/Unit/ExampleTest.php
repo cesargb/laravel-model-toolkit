@@ -1,8 +1,8 @@
 <?php
 
-namespace Cesargb\MorphCleaner\Tests\Unit;
+namespace Cesargb\ModelToolkit\Tests\Unit;
 
-use Cesargb\MorphCleaner\Tests\TestCase;
+use Cesargb\ModelToolkit\Tests\TestCase;
 
 class ExampleTest extends TestCase
 {

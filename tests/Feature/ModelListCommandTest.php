@@ -1,8 +1,8 @@
 <?php
 
-namespace Cesargb\MorphCleaner\Tests\Feature;
+namespace Cesargb\ModelToolkit\Tests\Feature;
 
-use Cesargb\MorphCleaner\Tests\TestCase;
+use Cesargb\ModelToolkit\Tests\TestCase;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Artisan;
 
@@ -63,11 +63,11 @@ class ModelListCommandTest extends TestCase
         $models = json_decode(Artisan::output(), true);
         $fqcns = array_column($models, 'fqcn');
 
-        $this->assertContains('Cesargb\MorphCleaner\Tests\Fixtures\Models\Post', $fqcns);
-        $this->assertContains('Cesargb\MorphCleaner\Tests\Fixtures\Models\Video', $fqcns);
-        $this->assertContains('Cesargb\MorphCleaner\Tests\Fixtures\Models\Image', $fqcns);
-        $this->assertContains('Cesargb\MorphCleaner\Tests\Fixtures\Models\Comment', $fqcns);
-        $this->assertContains('Cesargb\MorphCleaner\Tests\Fixtures\Models\Tag', $fqcns);
+        $this->assertContains('Cesargb\ModelToolkit\Tests\Fixtures\Models\Post', $fqcns);
+        $this->assertContains('Cesargb\ModelToolkit\Tests\Fixtures\Models\Video', $fqcns);
+        $this->assertContains('Cesargb\ModelToolkit\Tests\Fixtures\Models\Image', $fqcns);
+        $this->assertContains('Cesargb\ModelToolkit\Tests\Fixtures\Models\Comment', $fqcns);
+        $this->assertContains('Cesargb\ModelToolkit\Tests\Fixtures\Models\Tag', $fqcns);
     }
 
     public function test_json_models_have_expected_keys(): void
@@ -101,10 +101,10 @@ class ModelListCommandTest extends TestCase
         $models = json_decode(Artisan::output(), true);
         $modelsByFqcn = array_column($models, null, 'fqcn');
 
-        $post = $modelsByFqcn['Cesargb\MorphCleaner\Tests\Fixtures\Models\Post'];
+        $post = $modelsByFqcn['Cesargb\ModelToolkit\Tests\Fixtures\Models\Post'];
 
         $this->assertSame('Post', $post['name']);
-        $this->assertSame('Cesargb\MorphCleaner\Tests\Fixtures\Models', $post['namespace']);
+        $this->assertSame('Cesargb\ModelToolkit\Tests\Fixtures\Models', $post['namespace']);
         $this->assertSame('class', $post['type']);
         $this->assertSame(Model::class, $post['extend']);
     }
@@ -152,6 +152,6 @@ class ModelListCommandTest extends TestCase
         Artisan::call('model:list', ['--path' => $this->discoveryAppPath]);
         $output = Artisan::output();
 
-        $this->assertStringContainsString('Cesargb\MorphCleaner\Tests\Fixtures\Models', $output);
+        $this->assertStringContainsString('Cesargb\ModelToolkit\Tests\Fixtures\Models', $output);
     }
 }

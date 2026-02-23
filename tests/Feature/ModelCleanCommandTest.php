@@ -1,12 +1,12 @@
 <?php
 
-namespace Cesargb\MorphCleaner\Tests\Feature;
+namespace Cesargb\ModelToolkit\Tests\Feature;
 
-use Cesargb\MorphCleaner\Tests\Fixtures\Models\Comment;
-use Cesargb\MorphCleaner\Tests\Fixtures\Models\Post;
-use Cesargb\MorphCleaner\Tests\Fixtures\Models\Tag;
-use Cesargb\MorphCleaner\Tests\Fixtures\Models\Video;
-use Cesargb\MorphCleaner\Tests\TestCase;
+use Cesargb\ModelToolkit\Tests\Fixtures\Models\Comment;
+use Cesargb\ModelToolkit\Tests\Fixtures\Models\Post;
+use Cesargb\ModelToolkit\Tests\Fixtures\Models\Tag;
+use Cesargb\ModelToolkit\Tests\Fixtures\Models\Video;
+use Cesargb\ModelToolkit\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Cesargb\MorphCleaner\ClassMap;
+namespace Cesargb\ModelToolkit\ClassMap;
 
 use Illuminate\Database\Eloquent\MassPrunable;
 use Illuminate\Database\Eloquent\Model;

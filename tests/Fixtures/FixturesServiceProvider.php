@@ -1,6 +1,6 @@
 <?php
 
-namespace Cesargb\MorphCleaner\Tests\Fixtures;
+namespace Cesargb\ModelToolkit\Tests\Fixtures;
 
 use Illuminate\Support\ServiceProvider;
 

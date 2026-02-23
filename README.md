@@ -83,7 +83,7 @@ You can also use the internal classes directly in your application code.
 ### Retrieve All Polymorphic Relationships and Count Orphans
 
 ``` php
-use Cesargb\MorphCleaner\Morph;
+use Cesargb\ModelToolkit\Morph;
 
 $morph = new Morph();
 $models = $morph->get();
@@ -102,7 +102,7 @@ $deleted = $morph->clean(\App\Models\Post::class, 'comments');
 ### List Prunable Models
 
 ``` php
-use Cesargb\MorphCleaner\Prunable;
+use Cesargb\ModelToolkit\Prunable;
 
 $prunable = new Prunable();
 $models = $prunable->get();

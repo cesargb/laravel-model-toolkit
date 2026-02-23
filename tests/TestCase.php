@@ -1,9 +1,9 @@
 <?php
 
-namespace Cesargb\MorphCleaner\Tests;
+namespace Cesargb\ModelToolkit\Tests;
 
-use Cesargb\MorphCleaner\MorphCleanerServiceProvider;
-use Cesargb\MorphCleaner\Tests\Fixtures\FixturesServiceProvider;
+use Cesargb\ModelToolkit\ModelToolkitServiceProvider;
+use Cesargb\ModelToolkit\Tests\Fixtures\FixturesServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
 
 abstract class TestCase extends Orchestra
@@ -11,7 +11,7 @@ abstract class TestCase extends Orchestra
     protected function getPackageProviders($app)
     {
         return [
-            MorphCleanerServiceProvider::class,
+            ModelToolkitServiceProvider::class,
             FixturesServiceProvider::class,
         ];
     }
