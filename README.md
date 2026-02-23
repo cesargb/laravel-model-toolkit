@@ -31,8 +31,6 @@ This package:
 - ✅ Detects and executes cleanup for models using Laravel's `Prunable`
     or `MassPrunable` traits in the same command
 
-![Laravel Model Toolkit](/art/laravel-model-toolkit.webp){: style="max-width: 500px" }
-
 ------------------------------------------------------------------------
 
 ## Requirements
