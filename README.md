@@ -1,5 +1,9 @@
 # Laravel Model Toolkit
 
+[![tests](https://github.com/cesargb/laravel-model-toolkit/actions/workflows/tests.yml/badge.svg)](https://github.com/cesargb/laravel-model-toolkit/actions/workflows/tests.yml)
+[![static analysis](https://github.com/cesargb/laravel-model-toolkit/actions/workflows/static-analysis.yml/badge.svg)](https://github.com/cesargb/laravel-model-toolkit/actions/workflows/static-analysis.yml)
+[![lint](https://github.com/cesargb/laravel-model-toolkit/actions/workflows/lint.yml/badge.svg)](https://github.com/cesargb/laravel-model-toolkit/actions/workflows/lint.yml)
+
 A Laravel package that automatically discovers all Eloquent models in your application, detects **orphaned morph relation records**, and cleans them up. It also handles **prunable models** in the same pass.
 
 ## What it does
