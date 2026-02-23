@@ -137,7 +137,7 @@ class ClassMap
         return (new ClassMapInVendor($this->appPath))->get();
     }
 
-    private function extendedOf(string $fileContent): string
+    private function extendedOf(string $fileContent): ?string
     {
         $extendedOf = match (true) {
             preg_match('/\bextends\s+([\\\\\w]+)\b/', $fileContent, $matches) === 1 => $matches[1],
