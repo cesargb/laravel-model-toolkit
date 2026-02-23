@@ -49,7 +49,7 @@ class ClassMap
             return [
                 'filename' => $filename,
                 'fqcn' => $fqcn,
-                'namespace' => substr($fqcn, 0, strrpos($fqcn, '\\')),
+                'namespace' => $this->getNamespaceOfClass($fqcn),
                 'name' => $name,
                 'type' => $type,
                 'extend' => $extendedOf,
@@ -166,5 +166,13 @@ class ClassMap
         }
 
         return $extendedOf;
+    }
+
+    private function getNamespaceOfClass(string $fqcn): string
+    {
+        $parts = explode('\\', $fqcn);
+        array_pop($parts);
+
+        return implode('\\', $parts);
     }
 }

@@ -40,6 +40,7 @@ class ModelCleanCommand extends Command
 
     private function displayCliMorph(array $modelsWithMorphs): void
     {
+        $this->info('Models orphaned morph relations:');
         $this->newLine();
 
         $modelsWithHasOrphanedMorphs = array_filter($modelsWithMorphs, function ($model) {
@@ -53,7 +54,7 @@ class ModelCleanCommand extends Command
         });
 
         if (! $modelsWithHasOrphanedMorphs) {
-            $this->info('<fg=green>All morph relations are clean!</>');
+            $this->components->info('All morph relations are clean.');
             $this->newLine();
 
             return;

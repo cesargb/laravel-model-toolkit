@@ -32,7 +32,7 @@ class ModelCleanCommandTest extends TestCase
     public function test_shows_all_clean_message_when_no_orphans_exist(): void
     {
         $this->artisan('model:clean', ['--path' => $this->discoveryAppPath])
-            ->expectsOutputToContain('All morph relations are clean!')
+            ->expectsOutputToContain('All morph relations are clean.')
             ->assertExitCode(0);
     }
 
