@@ -73,18 +73,31 @@ class ClassMap
         ];
 
         return array_filter(
-            $this->classes(),
-            function ($item) use ($modelExtendedOf) {
-                $extendModel = $item['extend'] ?? null;
+            array_map(
+                function ($item) use ($modelExtendedOf) {
+                    $extendModel = $item['extend'] ?? null;
 
-                if (in_array($extendModel, $modelExtendedOf)) {
+                    if (is_null($extendModel) || ! in_array($extendModel, $modelExtendedOf)) {
+                        return null;
+                    }
+
                     $reflection = new \ReflectionClass($item['fqcn']);
 
-                    return $reflection->isSubclassOf(Model::class);
-                }
+                    if (! $reflection->isSubclassOf(Model::class)) {
+                        return null;
+                    }
 
-                return false;
-            }
+                    $model = new $item['fqcn'];
+
+                    $item = array_merge($item, [
+                        'table' => $model->getTable(),
+                        'connection' => $model->getConnectionName(),
+                    ]);
+
+                    return $item;
+                },
+                $this->classes(),
+            )
         );
     }
 

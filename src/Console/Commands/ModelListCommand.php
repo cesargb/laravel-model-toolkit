@@ -40,11 +40,8 @@ class ModelListCommand extends Command
                 $this->newLine();
                 $this->components->twoColumnDetail("<fg=green>{$currentNamespace}</>", '');
             }
-            $class = new $metadata['fqcn'];
 
-            $table = $class->getTable();
-
-            $this->components->twoColumnDetail("<options=bold>{$metadata['name']}</>", "<fg=gray>{$table}</>");
+            $this->components->twoColumnDetail("<options=bold>{$metadata['name']}</>", "<fg=gray>{$metadata['table']}</>");
         }
 
         $this->newLine();
