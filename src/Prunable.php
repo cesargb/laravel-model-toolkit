@@ -23,7 +23,7 @@ class Prunable
 
     public function get(): array
     {
-        $models = new ClassMap($this->appPath)->dev($this->dev)->generate()->prunable();
+        $models = new ClassMap($this->appPath)->dev($this->dev)->build()->prunable();
 
         return $models;
     }

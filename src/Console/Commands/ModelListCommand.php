@@ -18,7 +18,7 @@ class ModelListCommand extends Command
     {
         $appPath = $this->option('path') ?: base_path();
 
-        $models = (new ClassMap($appPath))->generate()->models();
+        $models = (new ClassMap($appPath))->build()->models();
 
         $this->option('json') ? $this->displayJson($models) : $this->displayCli($models);
 

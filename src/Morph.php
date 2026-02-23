@@ -35,7 +35,7 @@ class Morph
             return $this->cacheModelsMapped;
         }
 
-        $models = new ClassMap($this->appPath)->dev($this->dev)->generate()->models();
+        $models = new ClassMap($this->appPath)->dev($this->dev)->build()->models();
 
         $modelsMapped = $this->getModelsWithMorphRelations($models);
 

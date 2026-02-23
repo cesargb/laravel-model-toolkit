@@ -5,23 +5,12 @@ namespace Cesargb\MorphCleaner\ClassMap;
 use Illuminate\Database\Eloquent\MassPrunable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Prunable;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Illuminate\Database\Eloquent\Relations\MorphOne;
-use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 class ClassMap
 {
     private bool $dev = false;
 
     private array $classMapped = [];
-
-    private array $mapped = [];
-
-    private array $morphRelations = [
-        MorphOne::class,
-        MorphMany::class,
-        MorphToMany::class,
-    ];
 
     public function __construct(
         private string $appPath,
@@ -34,7 +23,7 @@ class ClassMap
         return $this;
     }
 
-    public function generate(): self
+    public function build(): self
     {
         $maps = array_merge(
             $this->inBase(),
@@ -111,7 +100,7 @@ class ClassMap
     private function abstracts(): array
     {
         if (! $this->classMapped) {
-            $this->generate();
+            $this->build();
         }
 
         return array_filter(
@@ -123,88 +112,13 @@ class ClassMap
     private function classes(): array
     {
         if (! $this->classMapped) {
-            $this->generate();
+            $this->build();
         }
 
         return array_filter(
             $this->classMapped,
             fn ($item) => $item['type'] === TypeDeclaration::_CLASS
         );
-    }
-
-    public function build(): self
-    {
-        $maps = array_merge(
-            $this->inBase(),
-            $this->inVendor(),
-        );
-
-        $this->mapped = array_map(function ($filename) {
-            $name = pathinfo($filename, PATHINFO_FILENAME);
-            $fileContent = file_get_contents($filename);
-
-            $type = match (true) {
-                preg_match('/\btrait\s+'.$name.'\b/', $fileContent) === 1 => TypeDeclaration::TRAIT,
-                preg_match('/\binterface\s+'.$name.'\b/', $fileContent) === 1 => TypeDeclaration::INTERFACE,
-                preg_match('/\babstract\s+class\s+'.$name.'\b/', $fileContent) === 1 => TypeDeclaration::ABSTRACT_CLASS,
-                preg_match('/\benum\s+'.$name.'\b/', $fileContent) === 1 => TypeDeclaration::ENUM,
-                preg_match('/\bclass\s+'.$name.'\b/', $fileContent) === 1 => TypeDeclaration::_CLASS,
-                default => TypeDeclaration::UNKNOWN,
-            };
-
-            $hasMorphRelation = false;
-
-            foreach ($this->morphRelations as $morphRelation) {
-                if (str_contains($fileContent, $morphRelation)) {
-                    $hasMorphRelation = true;
-                    break;
-                }
-            }
-
-            return [
-                'filename' => $filename,
-                'type' => $type,
-                'has_morph_relation' => $hasMorphRelation,
-            ];
-        }, $maps);
-
-        return $this;
-    }
-
-    public function classesWithMorphs(): array
-    {
-        $extended = $this->abstractionsWithMorphs();
-
-        return array_keys(array_filter(
-            $this->mapped,
-            function ($item) use ($extended) {
-                if ($item['type'] !== TypeDeclaration::_CLASS) {
-                    return false;
-                }
-                if ($item['has_morph_relation']) {
-                    return true;
-                }
-
-                $fileContent = file_get_contents($item['filename']);
-
-                foreach ($extended as $extend) {
-                    if (str_contains($fileContent, $extend)) {
-                        return true;
-                    }
-                }
-
-                return false;
-            }
-        ));
-    }
-
-    public function abstractionsWithMorphs(): array
-    {
-        return array_keys(array_filter(
-            $this->mapped,
-            fn ($item) => ($item['type'] === TypeDeclaration::TRAIT || $item['type'] === TypeDeclaration::ABSTRACT_CLASS)
-                && $item['has_morph_relation'] === true
-        ));
     }
 
     private function inBase(): array
