@@ -20,9 +20,9 @@ These are considered **orphaned records**.
 
 This package:
 
-- Automatically scans all Eloquent models in your application
-- Detects and removes orphaned records in polymorphic relationships
-- Detects and executes cleanup for models using Laravel's `Prunable`
+- ✅ Automatically scans all Eloquent models in your application
+- ✅ Detects and removes orphaned records in polymorphic relationships
+- ✅ Detects and executes cleanup for models using Laravel's `Prunable`
     or `MassPrunable` traits in the same command
 
 ------------------------------------------------------------------------
@@ -56,15 +56,8 @@ php artisan model:clean
 
 #### Options
 
-  -----------------------------------------------------------------------
-  Option                       Description
-  ---------------------------- ------------------------------------------
-  --pretend                    Preview what would be deleted without
-                               actually deleting records
-
-  --chunk=1000                 Number of records processed per batch
-                               during deletion
-  -----------------------------------------------------------------------
+--pretend; Preview what would be deleted without actually deleting records
+--chunk=1000; Number of records processed per batch during deletion
 
 ------------------------------------------------------------------------
 
@@ -79,9 +72,7 @@ php artisan model:list
 
 #### Options
 
-  Option   Description
-  -------- -------------------------------
-  --json   Output results in JSON format
+--json;   Output results in JSON format
 
 ------------------------------------------------------------------------
 
@@ -126,26 +117,3 @@ application instead of relying solely on Artisan commands.
 
 This project is licensed under the MIT License, meaning you are free to
 use, modify, and distribute it.
-
-------------------------------------------------------------------------
-
-## Feature Summary
-
-  -----------------------------------------------------------------------
-  Feature                          Description
-  -------------------------------- --------------------------------------
-  Model Discovery                  Automatically detects Eloquent models
-                                   in your project
-
-  Orphan Detection                 Finds records referencing non-existent
-                                   parent models
-
-  Polymorphic Cleanup              Removes orphaned morph relationship
-                                   records
-
-  Prunable Integration             Executes cleanup for models using
-                                   `Prunable` or `MassPrunable`
-
-  Artisan Commands                 Easy-to-use CLI commands with helpful
-                                   options
-  -----------------------------------------------------------------------
