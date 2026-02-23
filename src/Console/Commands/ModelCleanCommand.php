@@ -40,6 +40,7 @@ class ModelCleanCommand extends Command
 
     private function displayCliMorph(array $modelsWithMorphs): void
     {
+        $this->newLine();
         $this->info('Models orphaned morph relations:');
         $this->newLine();
 
@@ -59,8 +60,6 @@ class ModelCleanCommand extends Command
 
             return;
         }
-        $this->info('<fg=green>Models with Orphaned Morph Relations:</>');
-        $this->newLine();
 
         foreach ($modelsWithHasOrphanedMorphs as $model) {
             $metadata = $model['metadata'];
