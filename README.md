@@ -43,8 +43,6 @@ Available options:
 |--------|-------------|
 | `--pretend` | Show orphan counts without deleting anything |
 | `--chunk=1000` | Number of records to process per chunk when deleting |
-| `--path=` | Custom application base path for model discovery |
-| `--dev` | Include `autoload-dev` namespaces (useful for local testing) |
 
 ### `model:list`
 
@@ -57,7 +55,6 @@ php artisan model:list
 | Option | Description |
 |--------|-------------|
 | `--json` | Output results as JSON |
-| `--path=` | Custom application base path for model discovery |
 
 ## Programmatic usage
 
