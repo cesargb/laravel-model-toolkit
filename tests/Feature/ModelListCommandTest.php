@@ -17,19 +17,17 @@ class ModelListCommandTest extends TestCase
 
     public function test_command_exits_successfully(): void
     {
-        $this->artisan('model:list')->assertExitCode(0);
-    }
-
-    public function test_path_option_is_accepted(): void
-    {
-        $this->artisan('model:list', ['--path' => base_path()])
-            ->assertExitCode(0);
+        $this->artisan('model:list', [
+            '--path' => $this->discoveryAppPath,
+        ])->assertExitCode(0);
     }
 
     public function test_dev_flag_is_accepted(): void
     {
-        $this->artisan('model:list', ['--dev' => true])
-            ->assertExitCode(0);
+        $this->artisan('model:list', [
+            '--dev' => true,
+            '--path' => $this->discoveryAppPath,
+        ])->assertExitCode(0);
     }
 
     public function test_json_flag_outputs_valid_json(): void

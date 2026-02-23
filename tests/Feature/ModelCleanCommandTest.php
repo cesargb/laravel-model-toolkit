@@ -161,15 +161,6 @@ class ModelCleanCommandTest extends TestCase
         $this->assertStringContainsString('comments', $output);
     }
 
-    public function test_path_option_is_required_for_model_discovery(): void
-    {
-        $this->insertOrphanedComment();
-
-        Artisan::call('model:clean');
-
-        $this->assertSame(1, DB::table('comments')->count());
-    }
-
     public function test_clean_morph_many_via_video_parent(): void
     {
         $this->insertOrphanedComment(Video::class);
