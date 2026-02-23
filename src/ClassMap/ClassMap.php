@@ -1,0 +1,219 @@
+<?php
+
+namespace Cesargb\MorphCleaner\ClassMap;
+
+use Illuminate\Database\Eloquent\MassPrunable;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Prunable;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
+
+class ClassMap
+{
+    private bool $dev = false;
+
+    private array $classMapped = [];
+
+    private array $mapped = [];
+
+    private array $morphRelations = [
+        MorphOne::class,
+        MorphMany::class,
+        MorphToMany::class,
+    ];
+
+    public function __construct(
+        private string $appPath,
+    ) {}
+
+    public function dev(bool $dev = true): self
+    {
+        $this->dev = $dev;
+
+        return $this;
+    }
+
+    public function generate(): self
+    {
+        $maps = array_merge(
+            $this->inBase(),
+            $this->inVendor(),
+        );
+
+        $this->classMapped = array_map(function ($filename, $fqcn) {
+            $name = pathinfo($filename, PATHINFO_FILENAME);
+            $fileContent = file_get_contents($filename);
+
+            $type = match (true) {
+                preg_match('/\btrait\s+'.$name.'\b/', $fileContent) === 1 => TypeDeclaration::TRAIT,
+                preg_match('/\binterface\s+'.$name.'\b/', $fileContent) === 1 => TypeDeclaration::INTERFACE,
+                preg_match('/\babstract\s+class\s+'.$name.'\b/', $fileContent) === 1 => TypeDeclaration::ABSTRACT_CLASS,
+                preg_match('/\benum\s+'.$name.'\b/', $fileContent) === 1 => TypeDeclaration::ENUM,
+                preg_match('/\bclass\s+'.$name.'\b/', $fileContent) === 1 => TypeDeclaration::_CLASS,
+                default => TypeDeclaration::UNKNOWN,
+            };
+
+            return [
+                'filename' => $filename,
+                'fqcn' => $fqcn,
+                'namespace' => str_replace('\\'.$name, '', $fqcn),
+                'name' => $name,
+                'type' => $type,
+                'extend' => match (true) {
+                    preg_match('/\bextends\s+([\\\\\w]+)\b/', $fileContent, $matches) === 1 => $matches[1],
+                    default => null,
+                },
+            ];
+        }, $maps, array_keys($maps));
+
+        return $this;
+    }
+
+    public function models(): array
+    {
+        $abstractsExtendModel = array_filter(
+            $this->abstracts(),
+            fn ($item) => $item['extend'] === 'Model'
+        );
+
+        return array_filter(
+            $this->classes(),
+            function ($item) use ($abstractsExtendModel) {
+                $extendModel = $item['extend'] ?? null;
+
+                if ($extendModel === 'Model' || in_array($extendModel, array_column($abstractsExtendModel, 'name'))) {
+                    $reflection = new \ReflectionClass($item['fqcn']);
+
+                    return $reflection->isSubclassOf(Model::class);
+                }
+
+                return false;
+            }
+        );
+    }
+
+    public function prunable(): array
+    {
+        return array_filter(
+            $this->models(),
+            function ($model) {
+                $reflection = new \ReflectionClass($model['fqcn']);
+
+                $traits = $reflection->getTraitNames();
+
+                return in_array(Prunable::class, $traits)
+                    || in_array(MassPrunable::class, $traits);
+            }
+        );
+    }
+
+    private function abstracts(): array
+    {
+        if (! $this->classMapped) {
+            $this->generate();
+        }
+
+        return array_filter(
+            $this->classMapped,
+            fn ($item) => $item['type'] === TypeDeclaration::ABSTRACT_CLASS
+        );
+    }
+
+    private function classes(): array
+    {
+        if (! $this->classMapped) {
+            $this->generate();
+        }
+
+        return array_filter(
+            $this->classMapped,
+            fn ($item) => $item['type'] === TypeDeclaration::_CLASS
+        );
+    }
+
+    public function build(): self
+    {
+        $maps = array_merge(
+            $this->inBase(),
+            $this->inVendor(),
+        );
+
+        $this->mapped = array_map(function ($filename) {
+            $name = pathinfo($filename, PATHINFO_FILENAME);
+            $fileContent = file_get_contents($filename);
+
+            $type = match (true) {
+                preg_match('/\btrait\s+'.$name.'\b/', $fileContent) === 1 => TypeDeclaration::TRAIT,
+                preg_match('/\binterface\s+'.$name.'\b/', $fileContent) === 1 => TypeDeclaration::INTERFACE,
+                preg_match('/\babstract\s+class\s+'.$name.'\b/', $fileContent) === 1 => TypeDeclaration::ABSTRACT_CLASS,
+                preg_match('/\benum\s+'.$name.'\b/', $fileContent) === 1 => TypeDeclaration::ENUM,
+                preg_match('/\bclass\s+'.$name.'\b/', $fileContent) === 1 => TypeDeclaration::_CLASS,
+                default => TypeDeclaration::UNKNOWN,
+            };
+
+            $hasMorphRelation = false;
+
+            foreach ($this->morphRelations as $morphRelation) {
+                if (str_contains($fileContent, $morphRelation)) {
+                    $hasMorphRelation = true;
+                    break;
+                }
+            }
+
+            return [
+                'filename' => $filename,
+                'type' => $type,
+                'has_morph_relation' => $hasMorphRelation,
+            ];
+        }, $maps);
+
+        return $this;
+    }
+
+    public function classesWithMorphs(): array
+    {
+        $extended = $this->abstractionsWithMorphs();
+
+        return array_keys(array_filter(
+            $this->mapped,
+            function ($item) use ($extended) {
+                if ($item['type'] !== TypeDeclaration::_CLASS) {
+                    return false;
+                }
+                if ($item['has_morph_relation']) {
+                    return true;
+                }
+
+                $fileContent = file_get_contents($item['filename']);
+
+                foreach ($extended as $extend) {
+                    if (str_contains($fileContent, $extend)) {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+        ));
+    }
+
+    public function abstractionsWithMorphs(): array
+    {
+        return array_keys(array_filter(
+            $this->mapped,
+            fn ($item) => ($item['type'] === TypeDeclaration::TRAIT || $item['type'] === TypeDeclaration::ABSTRACT_CLASS)
+                && $item['has_morph_relation'] === true
+        ));
+    }
+
+    private function inBase(): array
+    {
+        return (new ClassMapInBase($this->appPath.'/composer.json'))->dev($this->dev)->get();
+    }
+
+    private function inVendor(): array
+    {
+        return (new ClassMapInVendor($this->appPath))->get();
+    }
+}

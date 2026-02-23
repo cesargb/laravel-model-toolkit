@@ -1,0 +1,39 @@
+{
+    "name": "cesargb/laravel-model-toolkit",
+    "description": "List all models, detect and delete orphaned morph relation records, and prune Eloquent models.",
+    "version": "0.1.0",
+    "type": "library",
+    "keywords": ["laravel", "prune", "morph", "cleaner"],
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Cesargb\\MorphCleaner\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Cesargb\\MorphCleaner\\Tests\\": "tests/"
+        }
+    },
+    "require": {
+        "php": "^8.4",
+        "symfony/finder": "^7.0"
+    },
+    "require-dev": {
+        "larastan/larastan": "^3.0",
+        "orchestra/testbench": "^10.0",
+        "phpunit/phpunit": "^11.0"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Cesargb\\MorphCleaner\\MorphCleanerServiceProvider"
+            ]
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
