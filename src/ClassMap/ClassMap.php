@@ -49,7 +49,7 @@ class ClassMap
             return [
                 'filename' => $filename,
                 'fqcn' => $fqcn,
-                'namespace' => str_replace('\\'.$name, '', $fqcn),
+                'namespace' => substr($fqcn, 0, strrpos($fqcn, '\\')),
                 'name' => $name,
                 'type' => $type,
                 'extend' => $extendedOf,
@@ -159,8 +159,8 @@ class ClassMap
 
         if (! str_contains($extendedOf ?? '\\', '\\')) {
             $extendedOf = match (true) {
-                preg_match('/\buse\s+([\\\\\w]+)\s+as\s+'.$extendedOf.'\b/', $fileContent, $matches) === 1 => $matches[1],
-                preg_match('/\buse\s+([\\\\\w]+)'.$extendedOf.'\b/', $fileContent, $matches) === 1 => $matches[1].$extendedOf,
+                preg_match('/\buse\s+([\\\\\w]+)\s+as\s+'.$extendedOf.'\b/', $fileContent, $matches) === 1 => ($matches[1] ?? null),
+                preg_match('/\buse\s+([\\\\\w]+)'.$extendedOf.'\b/', $fileContent, $matches) === 1 => ($matches[1] ?? '').$extendedOf,
                 default => $extendedOf,
             };
         }
