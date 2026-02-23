@@ -1,8 +1,14 @@
-# Laravel Model Toolkit
+<div align="center">
+    <img alt="Logo for Laravel Model Toolkit" src="art/laravel-model-toolkit.webp" style="max-height: 300px; width: 100%; max-width: 900px; margin-bottom: 20px; object-fit: cover;">
+</div>
+<div align="left">
+<h1>Laravel Model Toolkit</h1>
 
 [![tests](https://github.com/cesargb/laravel-model-toolkit/actions/workflows/tests.yml/badge.svg)](https://github.com/cesargb/laravel-model-toolkit/actions/workflows/tests.yml)
 [![static analysis](https://github.com/cesargb/laravel-model-toolkit/actions/workflows/static-analysis.yml/badge.svg)](https://github.com/cesargb/laravel-model-toolkit/actions/workflows/static-analysis.yml)
 [![lint](https://github.com/cesargb/laravel-model-toolkit/actions/workflows/lint.yml/badge.svg)](https://github.com/cesargb/laravel-model-toolkit/actions/workflows/lint.yml)
+
+</div>
 
 A Laravel package that automatically discovers all Eloquent models,
 detects orphaned records in polymorphic relationships, and removes
@@ -24,6 +30,8 @@ This package:
 - ✅ Detects and removes orphaned records in polymorphic relationships
 - ✅ Detects and executes cleanup for models using Laravel's `Prunable`
     or `MassPrunable` traits in the same command
+
+![Laravel Model Toolkit](/art/laravel-model-toolkit.webp){: style="max-width: 500px" }
 
 ------------------------------------------------------------------------
 
