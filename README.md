@@ -4,82 +4,148 @@
 [![static analysis](https://github.com/cesargb/laravel-model-toolkit/actions/workflows/static-analysis.yml/badge.svg)](https://github.com/cesargb/laravel-model-toolkit/actions/workflows/static-analysis.yml)
 [![lint](https://github.com/cesargb/laravel-model-toolkit/actions/workflows/lint.yml/badge.svg)](https://github.com/cesargb/laravel-model-toolkit/actions/workflows/lint.yml)
 
-A Laravel package that automatically discovers all Eloquent models in your application, detects **orphaned morph relation records**, and cleans them up. It also handles **prunable models** in the same pass.
+A Laravel package that automatically discovers all Eloquent models,
+detects orphaned records in polymorphic relationships, and removes
+unwanted entries. It also executes cleanup for prunable models in a
+single pass.
 
-## What it does
+------------------------------------------------------------------------
 
-When you delete a parent model (e.g. `Post`), any polymorphic records pointing to it (e.g. rows in `images`, `comments`, or `taggables`) become orphaned — they reference a `post_id` that no longer exists. This package scans your models, finds those orphaned rows, and deletes them.
+## What Does This Package Do?
 
-It also discovers models that use Laravel's `Prunable` or `MassPrunable` traits and runs them as part of the same cleanup command.
+When you delete a parent model (for example, a `Post`), related tables
+using **polymorphic relationships** (such as `images`, `comments`, or
+`taggables`) may retain records pointing to IDs that no longer exist.
+These are considered **orphaned records**.
+
+This package:
+
+- Automatically scans all Eloquent models in your application
+- Detects and removes orphaned records in polymorphic relationships
+- Detects and executes cleanup for models using Laravel's `Prunable`
+    or `MassPrunable` traits in the same command
+
+------------------------------------------------------------------------
 
 ## Requirements
 
-- PHP 8.4+
-- Laravel 12+
+- PHP 8.4 or higher
+- Laravel 12 or higher
+
+------------------------------------------------------------------------
 
 ## Installation
 
-```bash
+Install the package via Composer:
+
+``` bash
 composer require cesargb/laravel-model-toolkit
 ```
 
-The service provider is auto-discovered via Laravel's package discovery.
+------------------------------------------------------------------------
 
-## Commands
+## Available Commands
 
-### `model:clean`
+### model:clean
 
-Shows orphaned morph relation records and prunable models, then cleans them up.
+Displays orphaned records and prunable models, then removes them.
 
-```bash
+``` bash
 php artisan model:clean
 ```
 
-Use `--pretend` to preview what would be deleted without making any changes:
+#### Options
 
-```bash
-php artisan model:clean --pretend
-```
+  -----------------------------------------------------------------------
+  Option                       Description
+  ---------------------------- ------------------------------------------
+  --pretend                    Preview what would be deleted without
+                               actually deleting records
 
-Available options:
+  --chunk=1000                 Number of records processed per batch
+                               during deletion
+  -----------------------------------------------------------------------
 
-| Option | Description |
-|--------|-------------|
-| `--pretend` | Show orphan counts without deleting anything |
-| `--chunk=1000` | Number of records to process per chunk when deleting |
+------------------------------------------------------------------------
 
-### `model:list`
+### model:list
 
-Lists all discovered Eloquent models grouped by namespace, with their associated database table.
+Lists all discovered Eloquent models grouped by namespace along with
+their database tables.
 
-```bash
+``` bash
 php artisan model:list
 ```
 
-| Option | Description |
-|--------|-------------|
-| `--json` | Output results as JSON |
+#### Options
 
-## Programmatic usage
+  Option   Description
+  -------- -------------------------------
+  --json   Output results in JSON format
 
-You can use the core classes directly:
+------------------------------------------------------------------------
 
-```php
+## Programmatic Usage
+
+You can also use the internal classes directly in your application code.
+
+### Retrieve All Polymorphic Relationships and Count Orphans
+
+``` php
 use Cesargb\MorphCleaner\Morph;
-use Cesargb\MorphCleaner\Prunable;
 
-// Get all models with morph relations and their orphan counts
 $morph = new Morph();
 $models = $morph->get();
+```
 
-// Clean orphaned records for a specific model and relation method
+------------------------------------------------------------------------
+
+### Clean Orphans for a Specific Model and Relation
+
+``` php
 $deleted = $morph->clean(\App\Models\Post::class, 'comments');
+```
 
-// Get all models that use Prunable or MassPrunable traits
+------------------------------------------------------------------------
+
+### List Prunable Models
+
+``` php
+use Cesargb\MorphCleaner\Prunable;
+
 $prunable = new Prunable();
 $models = $prunable->get();
 ```
 
+This is useful if you want to integrate cleanup logic directly into your
+application instead of relying solely on Artisan commands.
+
+------------------------------------------------------------------------
+
 ## License
 
-MIT
+This project is licensed under the MIT License, meaning you are free to
+use, modify, and distribute it.
+
+------------------------------------------------------------------------
+
+## Feature Summary
+
+  -----------------------------------------------------------------------
+  Feature                          Description
+  -------------------------------- --------------------------------------
+  Model Discovery                  Automatically detects Eloquent models
+                                   in your project
+
+  Orphan Detection                 Finds records referencing non-existent
+                                   parent models
+
+  Polymorphic Cleanup              Removes orphaned morph relationship
+                                   records
+
+  Prunable Integration             Executes cleanup for models using
+                                   `Prunable` or `MassPrunable`
+
+  Artisan Commands                 Easy-to-use CLI commands with helpful
+                                   options
+  -----------------------------------------------------------------------
