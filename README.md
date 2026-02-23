@@ -62,8 +62,9 @@ php artisan model:clean
 
 #### Options
 
---pretend; Preview what would be deleted without actually deleting records
---chunk=1000; Number of records processed per batch during deletion
+`--pretend`; Preview what would be deleted without actually deleting records
+
+`--chunk=1000`; Number of records processed per batch during deletion
 
 ------------------------------------------------------------------------
 
@@ -78,7 +79,7 @@ php artisan model:list
 
 #### Options
 
---json;   Output results in JSON format
+`--json`;   Output results in JSON format
 
 ------------------------------------------------------------------------
 
