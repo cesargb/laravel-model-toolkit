@@ -5,6 +5,7 @@ namespace Cesargb\MorphCleaner\ClassMap;
 use Illuminate\Database\Eloquent\MassPrunable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Prunable;
+use Illuminate\Foundation\Auth\User;
 
 class ClassMap
 {
@@ -62,15 +63,21 @@ class ClassMap
     {
         $abstractsExtendModel = array_filter(
             $this->abstracts(),
-            fn ($item) => $item['extend'] === 'Model'
+            fn ($item) => $item['extend'] === Model::class
         );
+
+        $modelExtendedOf = [
+            Model::class,
+            ...array_column($abstractsExtendModel, 'fqcn'),
+            User::class,
+        ];
 
         return array_filter(
             $this->classes(),
-            function ($item) use ($abstractsExtendModel) {
+            function ($item) use ($modelExtendedOf) {
                 $extendModel = $item['extend'] ?? null;
 
-                if ($extendModel === Model::class || in_array($extendModel, array_column($abstractsExtendModel, 'name'))) {
+                if (in_array($extendModel, $modelExtendedOf)) {
                     $reflection = new \ReflectionClass($item['fqcn']);
 
                     return $reflection->isSubclassOf(Model::class);
