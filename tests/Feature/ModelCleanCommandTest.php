@@ -2,15 +2,19 @@
 
 namespace Cesargb\ModelToolkit\Tests\Feature;
 
+use Cesargb\ModelToolkit\Morph;
 use Cesargb\ModelToolkit\Tests\Fixtures\Models\Article;
 use Cesargb\ModelToolkit\Tests\Fixtures\Models\Comment;
+use Cesargb\ModelToolkit\Tests\Fixtures\Models\Podcast;
 use Cesargb\ModelToolkit\Tests\Fixtures\Models\Post;
 use Cesargb\ModelToolkit\Tests\Fixtures\Models\Tag;
 use Cesargb\ModelToolkit\Tests\Fixtures\Models\Video;
 use Cesargb\ModelToolkit\Tests\TestCase;
+use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 class ModelCleanCommandTest extends TestCase
 {
@@ -213,6 +217,40 @@ class ModelCleanCommandTest extends TestCase
             ->where('commentable_type', Article::class)
             ->value('commentable_id'));
         $this->assertSame(500, $article->legacy_id);
+    }
+
+    public function test_clean_skips_relations_across_connections(): void
+    {
+        Schema::connection('secondary')->create('podcasts', function (Blueprint $table) {
+            $table->id();
+            $table->string('title');
+        });
+        Schema::connection('secondary')->create('comments', function (Blueprint $table) {
+            $table->id();
+            $table->morphs('commentable');
+            $table->text('body');
+        });
+        DB::connection('secondary')->table('podcasts')->insert(['title' => 'decoy podcast']);
+        DB::connection('secondary')->table('comments')->insert([
+            'commentable_type' => Podcast::class,
+            'commentable_id' => 99999,
+            'body' => 'decoy comment in the parent connection',
+        ]);
+
+        $this->insertOrphanedComment(Podcast::class);
+
+        Artisan::call('model:clean', ['--path' => $this->discoveryAppPath]);
+
+        $this->assertSame(1, DB::connection('secondary')->table('comments')->count());
+        $this->assertSame(1, DB::table('comments')
+            ->where('commentable_type', Podcast::class)
+            ->count());
+
+        $models = (new Morph($this->discoveryAppPath))->get();
+        $podcast = array_find($models, fn ($model) => $model['fqcn'] === Podcast::class);
+        $method = array_find($podcast['methods'], fn ($m) => $m['name'] === 'comments');
+
+        $this->assertArrayHasKey('error', $method['count']);
     }
 
     private function insertOrphanedComment(?string $morphType = null, int $morphId = 99999): void

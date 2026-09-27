@@ -14,6 +14,8 @@ class Comment extends Model
 {
     use HasFactory;
 
+    protected $connection = 'testing';
+
     protected $fillable = ['body', 'commentable_id', 'commentable_type'];
 
     public function commentable(): MorphTo

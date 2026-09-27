@@ -191,8 +191,14 @@ class Morph
         $morphFieldId = $method['morph_model']['fields']['id'];
         $parentModel = new $parentFqcn;
         $parentKey = $method['morph_model']['fields']['parent_key'] ?? $parentModel->getKeyName();
+        $parentConnection = $parentModel->getConnection()->getName();
+        $morphConnection = $method['morph_model']['connection'] ?? $parentConnection;
 
-        return DB::connection($parentModel->getConnectionName())
+        if ($morphConnection !== $parentConnection) {
+            throw new \RuntimeException("Relation across different connections is not supported ({$parentConnection} <> {$morphConnection}).");
+        }
+
+        return DB::connection($morphConnection)
             ->table($morphModelTable)
             ->where($morphFieldType, $parentModel->getMorphClass())
             ->whereNotExists(function ($query) use (
