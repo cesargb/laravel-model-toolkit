@@ -1,7 +1,8 @@
 <?php
 
-namespace Cesargb\ModelToolkit\Tests\Fixtures\Models;
+namespace Cesargb\ModelToolkit\Tests\Fixtures\CrossConnectionModels;
 
+use Cesargb\ModelToolkit\Tests\Fixtures\Models\Comment;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 

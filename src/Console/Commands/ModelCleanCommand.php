@@ -44,53 +44,66 @@ class ModelCleanCommand extends Command
         $this->info('Models orphaned morph relations:');
         $this->newLine();
 
-        $modelsWithHasOrphanedMorphs = array_filter($modelsWithMorphs, function ($model) {
-            foreach ($model['methods'] as $method) {
-                if (! isset($method['count']['error']) && $method['count']['orphans'] > 0) {
-                    return true;
-                }
-            }
+        $modelsToReport = array_filter($modelsWithMorphs, fn ($model) => $this->hasOrphansOrErrors($model));
 
-            return false;
-        });
-
-        if (! $modelsWithHasOrphanedMorphs) {
+        if (! $modelsToReport) {
             $this->components->info('All morph relations are clean.');
             $this->newLine();
 
             return;
         }
 
-        foreach ($modelsWithHasOrphanedMorphs as $model) {
+        foreach ($modelsToReport as $model) {
             $metadata = $model['metadata'];
 
             foreach ($model['methods'] as $method) {
-                $numOrphans = $method['count']['orphans'] ?? 0;
-                $hasError = isset($method['count']['error']);
+                $label = "<options=bold>{$metadata['fqcn']}::{$method['name']}</>";
 
-                if ($numOrphans === 0 && ! $hasError) {
-                    continue;
-                }
-
-                if ($this->option('pretend') || $hasError) {
+                if (isset($method['count']['error'])) {
                     $this->components->twoColumnDetail(
-                        "<options=bold>{$metadata['fqcn']}::{$method['name']}</>",
-                        "<fg=yellow;options=bold>{$numOrphans}</>"
+                        $label,
+                        "<fg=red;options=bold>error: {$method['count']['error']}</>"
                     );
 
                     continue;
                 }
 
-                $cleaned = $this->morph->clean($metadata['fqcn'], $method['name']);
+                $numOrphans = $method['count']['orphans'];
 
-                $this->components->twoColumnDetail(
-                    "<options=bold>{$metadata['fqcn']}::{$method['name']}</>",
-                    "<fg=red;options=bold>{$cleaned} deleted</>"
-                );
+                if ($numOrphans === 0) {
+                    continue;
+                }
+
+                if ($this->option('pretend')) {
+                    $this->components->twoColumnDetail($label, "<fg=yellow;options=bold>{$numOrphans}</>");
+
+                    continue;
+                }
+
+                $result = $this->morph->clean($metadata['fqcn'], $method['name']);
+
+                if ($result->failed()) {
+                    $this->components->twoColumnDetail($label, "<fg=red;options=bold>failed: {$result->error()}</>");
+
+                    continue;
+                }
+
+                $this->components->twoColumnDetail($label, "<fg=red;options=bold>{$result->deletedCount()} deleted</>");
             }
         }
 
         $this->newLine();
+    }
+
+    private function hasOrphansOrErrors(array $model): bool
+    {
+        foreach ($model['methods'] as $method) {
+            if (isset($method['count']['error']) || $method['count']['orphans'] > 0) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private function displayCliPrunable(array $modelsPrunable): void

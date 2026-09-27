@@ -3,9 +3,9 @@
 namespace Cesargb\ModelToolkit\Tests\Feature;
 
 use Cesargb\ModelToolkit\Morph;
+use Cesargb\ModelToolkit\Tests\Fixtures\CrossConnectionModels\Podcast;
 use Cesargb\ModelToolkit\Tests\Fixtures\Models\Article;
 use Cesargb\ModelToolkit\Tests\Fixtures\Models\Comment;
-use Cesargb\ModelToolkit\Tests\Fixtures\Models\Podcast;
 use Cesargb\ModelToolkit\Tests\Fixtures\Models\Post;
 use Cesargb\ModelToolkit\Tests\Fixtures\Models\Tag;
 use Cesargb\ModelToolkit\Tests\Fixtures\Models\Video;
@@ -22,10 +22,13 @@ class ModelCleanCommandTest extends TestCase
 
     private string $discoveryAppPath;
 
+    private string $crossConnectionAppPath;
+
     protected function setUp(): void
     {
         parent::setUp();
         $this->discoveryAppPath = realpath(__DIR__.'/../Fixtures/DiscoveryApp');
+        $this->crossConnectionAppPath = realpath(__DIR__.'/../Fixtures/CrossConnectionApp');
     }
 
     public function test_command_exits_successfully(): void
@@ -239,14 +242,15 @@ class ModelCleanCommandTest extends TestCase
 
         $this->insertOrphanedComment(Podcast::class);
 
-        Artisan::call('model:clean', ['--path' => $this->discoveryAppPath]);
+        Artisan::call('model:clean', ['--path' => $this->crossConnectionAppPath]);
 
         $this->assertSame(1, DB::connection('secondary')->table('comments')->count());
         $this->assertSame(1, DB::table('comments')
             ->where('commentable_type', Podcast::class)
             ->count());
+        $this->assertStringContainsString('error:', Artisan::output());
 
-        $models = (new Morph($this->discoveryAppPath))->get();
+        $models = (new Morph($this->crossConnectionAppPath))->get();
         $podcast = array_find($models, fn ($model) => $model['fqcn'] === Podcast::class);
         $method = array_find($podcast['methods'], fn ($m) => $m['name'] === 'comments');
 

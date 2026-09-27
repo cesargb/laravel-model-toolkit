@@ -1,0 +1,7 @@
+{
+    "autoload": {
+        "psr-4": {
+            "Cesargb\\ModelToolkit\\Tests\\Fixtures\\CrossConnectionModels\\": "../CrossConnectionModels/"
+        }
+    }
+}

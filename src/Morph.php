@@ -47,11 +47,20 @@ class Morph
         return $this->cacheModelsMapped;
     }
 
-    public function clean(string $modelFqcn, string $method): ?int
+    public function clean(string $modelFqcn, string $method): MorphCleanResult
     {
         $mappedModels = $this->get();
         $model = array_find($mappedModels, fn ($model) => $model['fqcn'] === $modelFqcn);
+
+        if (is_null($model)) {
+            return MorphCleanResult::failure("Model {$modelFqcn} was not found.");
+        }
+
         $methodData = array_find($model['methods'], fn ($m) => $m['name'] === $method);
+
+        if (is_null($methodData)) {
+            return MorphCleanResult::failure("Method {$modelFqcn}::{$method} was not found.");
+        }
 
         return $this->cleanMethod($modelFqcn, $methodData);
     }
@@ -175,12 +184,12 @@ class Morph
         return $method;
     }
 
-    public function cleanMethod(string $parentFqcn, array $method): ?int
+    public function cleanMethod(string $parentFqcn, array $method): MorphCleanResult
     {
         try {
-            return $this->builderCleaner($parentFqcn, $method)->delete();
+            return MorphCleanResult::success($this->builderCleaner($parentFqcn, $method)->delete());
         } catch (\Throwable $th) {
-            return null;
+            return MorphCleanResult::failure($th->getMessage());
         }
     }
 

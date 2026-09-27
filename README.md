@@ -101,7 +101,13 @@ $models = $morph->get();
 ### Clean Orphans for a Specific Model and Relation
 
 ``` php
-$deleted = $morph->clean(\App\Models\Post::class, 'comments');
+$result = $morph->clean(\App\Models\Post::class, 'comments');
+
+if ($result->failed()) {
+    // $result->error() holds the failure reason
+}
+
+$deleted = $result->deletedCount();
 ```
 
 ------------------------------------------------------------------------
