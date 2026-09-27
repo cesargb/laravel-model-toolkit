@@ -108,9 +108,11 @@ class Morph
                     if ($relation instanceof MorphOneOrMany) {
                         $table = $relation->getRelated()->getTable();
                         $fieldId = $relation->getForeignKeyName();
+                        $parentKey = $relation->getLocalKeyName();
                     } elseif ($relation instanceof MorphToMany) {
                         $table = $relation->getTable();
                         $fieldId = $relation->getForeignPivotKeyName();
+                        $parentKey = $relation->getParentKeyName();
                     }
                     $returnType = $method->getReturnType();
 
@@ -129,6 +131,7 @@ class Morph
                             'fields' => [
                                 'id' => $fieldId ?? null,
                                 'type' => $fieldType ?? null,
+                                'parent_key' => $parentKey ?? null,
                             ],
                         ],
                     ];
@@ -187,6 +190,7 @@ class Morph
         $morphFieldType = $method['morph_model']['fields']['type'];
         $morphFieldId = $method['morph_model']['fields']['id'];
         $parentModel = new $parentFqcn;
+        $parentKey = $method['morph_model']['fields']['parent_key'] ?? $parentModel->getKeyName();
 
         return DB::connection($parentModel->getConnectionName())
             ->table($morphModelTable)
@@ -194,11 +198,12 @@ class Morph
             ->whereNotExists(function ($query) use (
                 $parentModel,
                 $morphModelTable,
-                $morphFieldId
+                $morphFieldId,
+                $parentKey
             ) {
                 $query->select(DB::raw(1))
                     ->from($parentModel->getTable().' as morph_parent')
-                    ->whereColumn('morph_parent.'.$parentModel->getKeyName(), '=', $morphModelTable.'.'.$morphFieldId);
+                    ->whereColumn('morph_parent.'.$parentKey, '=', $morphModelTable.'.'.$morphFieldId);
             });
     }
 }

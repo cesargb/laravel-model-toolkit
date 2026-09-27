@@ -2,6 +2,7 @@
 
 namespace Cesargb\ModelToolkit\Tests\Feature;
 
+use Cesargb\ModelToolkit\Tests\Fixtures\Models\Article;
 use Cesargb\ModelToolkit\Tests\Fixtures\Models\Comment;
 use Cesargb\ModelToolkit\Tests\Fixtures\Models\Post;
 use Cesargb\ModelToolkit\Tests\Fixtures\Models\Tag;
@@ -192,6 +193,26 @@ class ModelCleanCommandTest extends TestCase
             ->where('commentable_type', Comment::class)
             ->where('commentable_id', 99999)
             ->count());
+    }
+
+    public function test_clean_uses_relation_local_key(): void
+    {
+        $article = Article::factory()->create(['legacy_id' => 500]);
+        Comment::factory()->create([
+            'commentable_type' => Article::class,
+            'commentable_id' => 500,
+        ]);
+        $this->insertOrphanedComment(Article::class);
+
+        Artisan::call('model:clean', ['--path' => $this->discoveryAppPath]);
+
+        $this->assertSame(1, DB::table('comments')
+            ->where('commentable_type', Article::class)
+            ->count());
+        $this->assertSame(500, DB::table('comments')
+            ->where('commentable_type', Article::class)
+            ->value('commentable_id'));
+        $this->assertSame(500, $article->legacy_id);
     }
 
     private function insertOrphanedComment(?string $morphType = null, int $morphId = 99999): void
