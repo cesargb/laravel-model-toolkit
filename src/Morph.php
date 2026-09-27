@@ -197,8 +197,8 @@ class Morph
                 $morphFieldId
             ) {
                 $query->select(DB::raw(1))
-                    ->from($parentModel->getTable())
-                    ->whereColumn($parentModel->getTable().'.'.$parentModel->getKeyName(), '=', $morphModelTable.'.'.$morphFieldId);
+                    ->from($parentModel->getTable().' as morph_parent')
+                    ->whereColumn('morph_parent.'.$parentModel->getKeyName(), '=', $morphModelTable.'.'.$morphFieldId);
             });
     }
 }

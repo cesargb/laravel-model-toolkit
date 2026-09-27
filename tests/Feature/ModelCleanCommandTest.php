@@ -172,6 +172,28 @@ class ModelCleanCommandTest extends TestCase
             ->count());
     }
 
+    public function test_clean_does_not_delete_valid_self_referencing_replies(): void
+    {
+        $post = Post::factory()->create();
+        $comment = Comment::factory()->create([
+            'commentable_type' => Post::class,
+            'commentable_id' => $post->id,
+        ]);
+        Comment::factory()->create([
+            'commentable_type' => Comment::class,
+            'commentable_id' => $comment->id,
+        ]);
+        $this->insertOrphanedComment(Comment::class);
+
+        Artisan::call('model:clean', ['--path' => $this->discoveryAppPath]);
+
+        $this->assertSame(2, DB::table('comments')->count());
+        $this->assertSame(0, DB::table('comments')
+            ->where('commentable_type', Comment::class)
+            ->where('commentable_id', 99999)
+            ->count());
+    }
+
     private function insertOrphanedComment(?string $morphType = null, int $morphId = 99999): void
     {
         DB::table('comments')->insert([
