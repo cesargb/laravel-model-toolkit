@@ -2,38 +2,42 @@ name: static analysis
 
 on:
   push:
+    branches: [main]
     paths:
-      - '**.php'
-      - 'phpstan.neon'
-      - 'composer.json'
-      - '.github/workflows/static-analysis.yml'
+      - "composer.json"
+      - "**.php"
+      - "phpstan.neon.dist"
+      - ".github/workflows/static-analysis.yml"
 
   pull_request:
     paths:
-      - '**.php'
-      - 'phpstan.neon'
-      - 'composer.json'
-      - '.github/workflows/static-analysis.yml'
+      - "composer.json"
+      - "**.php"
+      - "phpstan.neon.dist"
+      - ".github/workflows/static-analysis.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   phpstan:
     runs-on: ubuntu-latest
 
-    name: PHPStan
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.5
-          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, exif
+          php-version: "8.5"
           coverage: none
 
-      - name: Install dependencies
-        run: composer update --prefer-stable --prefer-dist --no-interaction
+      - name: Install composer dependencies
+        uses: ramsey/composer-install@v4
 
-      - name: Run PHPStan
-        run: vendor/bin/phpstan analyse --error-format github
+      - name: Run analyse phpstan
+        run: vendor/bin/phpstan analyse --error-format github --no-progress
