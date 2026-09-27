@@ -2,28 +2,32 @@ name: lint
 
 on:
   push:
-      paths:
-          - '**.php'
-          - 'composer.json'
-          - '.github/workflows/style-fix.yml'
+    branches: main
+    paths:
+      - "**.php"
+      - ".github/workflows/lint.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
   lint:
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: true
-      matrix:
-        php: [8.5]
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: ${{ matrix.php }}
-          tools: pint
+          php-version: "8.5"
+          tools: pint:1.x, cs2pr
+          coverage: none
 
       - name: Run Pint
-        run: pint --test
+        run: pint --test --format=checkstyle | cs2pr
