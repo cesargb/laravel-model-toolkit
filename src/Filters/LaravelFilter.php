@@ -3,6 +3,8 @@
 namespace Cesargb\ModelToolkit\Filters;
 
 use Cesargb\ModelToolkit\Filters\Contracts\Filterable;
+use Illuminate\Filesystem\Filesystem;
+use Illuminate\Foundation\PackageManifest;
 
 class LaravelFilter implements Filterable
 {
@@ -37,9 +39,9 @@ class LaravelFilter implements Filterable
         }
 
         $manifest = $this->appPath === base_path()
-            ? app(\Illuminate\Foundation\PackageManifest::class)
-            : new \Illuminate\Foundation\PackageManifest(
-                files: new \Illuminate\Filesystem\Filesystem,
+            ? app(PackageManifest::class)
+            : new PackageManifest(
+                files: new Filesystem,
                 basePath: $this->appPath,
                 manifestPath: $this->appPath.'/bootstrap/cache/packages.php'
             );
